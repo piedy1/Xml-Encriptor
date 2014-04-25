@@ -1,0 +1,9 @@
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+--><xenc:EncryptedData xmlns:xenc="http://www.w3.org/2001/04/xmlenc#" Type="http://www.w3.org/2001/04/xmlenc#Element"><xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-cbc"/><ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+<xenc:EncryptedKey><xenc:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#rsa-1_5"/><xenc:CipherData><xenc:CipherValue>AxnJH6l+NgzGAel4PPLmN4bguMu1BHQGNGonMvsZbIgQJcLpsLCMMK/8tPpyCxTCPCZ+4Ggo1f7e
+4gdCF7giB/Mdcm4w+bIoVQoRiBM+TLVR+2cOkrYqC2ps9bphuZWBh2yOH4uQ+5YhDvE1lY6E0GDY
+MtKvdoO12FanZ6h8Gvo=</xenc:CipherValue></xenc:CipherData></xenc:EncryptedKey></ds:KeyInfo><xenc:CipherData><xenc:CipherValue>24JkeeuvuYytq3tXY4a/Qucz1oMHo1UiPP7ul9tlPPFxDG3/RZ63tea4eFbYxR6jm9/V7nI9S712
+ZerhRA92YCHZuS67bF6+EZ+dmYolcvU=</xenc:CipherValue></xenc:CipherData></xenc:EncryptedData>
