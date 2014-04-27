@@ -47,19 +47,19 @@ import javax.xml.transform.OutputKeys;
  *
  * @author Vishal Mahajan (Sun Microsystems)
  */
-public class Decrypter {
+public class XmlDecrypter {
 
     /** {@link org.apache.commons.logging} logging facility */
     static org.apache.commons.logging.Log log = 
         org.apache.commons.logging.LogFactory.getLog(
-            Decrypter.class.getName());
+            XmlDecrypter.class.getName());
 
     static {
         org.apache.xml.security.Init.init();
     }
 
     private static Document loadEncryptionDocument() throws Exception {
-        String fileName = "src/main/java/ch/bfh/ti/xml/output/encriptedAnimal.xml";
+        String fileName = "src/main/java/ch/bfh/ti/xml/output/Alice1.xml";
         File encryptionFile = new File(fileName);
         javax.xml.parsers.DocumentBuilderFactory dbf =
             javax.xml.parsers.DocumentBuilderFactory.newInstance();
@@ -114,13 +114,19 @@ public class Decrypter {
             (Element) document.getElementsByTagNameNS(
                 EncryptionConstants.EncryptionSpecNS,  // get the element by this name space: "http://www.w3.org/2001/04/xmlenc#"
                 EncryptionConstants._TAG_ENCRYPTEDDATA).item(0); // get the first encrypted data element
-
-        // Load the KeyStore and get the signing key and certificate.
+        
+        // Create a keystore with type JCEKS
         KeyStore ks = KeyStore.getInstance("JCEKS");
+        
+        // Load the keystore 
         ks.load(new FileInputStream("src/main/java/ch/bfh/ti/xml/util/KeyStore.jce"), "changeit".toCharArray());
+        
+        // get the signing key
         KeyStore.PrivateKeyEntry keyEntry
-                = (KeyStore.PrivateKeyEntry) ks.getEntry("bob", new KeyStore.PasswordProtection("changeit".toCharArray()));
+                = (KeyStore.PrivateKeyEntry) ks.getEntry("bank", new KeyStore.PasswordProtection("changeit".toCharArray()));
+        
 
+        
         XMLCipher xmlCipher = XMLCipher.getInstance();
         /*
          * The key to be used for decrypting xml data would be obtained
@@ -134,6 +140,7 @@ public class Decrypter {
          */
         xmlCipher.doFinal(document, encryptedDataElement);
 
-        outputDocToFile(document, "src/main/java/ch/bfh/ti/xml/input/animal.xml");
+        outputDocToFile(document, "src/main/java/ch/bfh/ti/xml/input/Alic2.xml");
+       
     }
 }

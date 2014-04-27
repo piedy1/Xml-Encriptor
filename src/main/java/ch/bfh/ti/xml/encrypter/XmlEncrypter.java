@@ -48,11 +48,18 @@ public class XmlEncrypter {
         dbf.setNamespaceAware(true);
         Document doc = dbf.newDocumentBuilder().parse(new FileInputStream("src/main/java/ch/bfh/ti/xml/input/animal.xml"));
         
-        // Load the KeyStore and get the signing key and certificate.
+       
+        // Create a keystore with type JCEKS
         KeyStore ks = KeyStore.getInstance("JCEKS");
+        
+        // Load the keystore 
         ks.load(new FileInputStream("src/main/java/ch/bfh/ti/xml/util/KeyStore.jce"), "changeit".toCharArray());
+        
+        // get the signing key
         KeyStore.PrivateKeyEntry keyEntry
-                = (KeyStore.PrivateKeyEntry) ks.getEntry("bob", new KeyStore.PasswordProtection("changeit".toCharArray()));
+                = (KeyStore.PrivateKeyEntry) ks.getEntry("alice", new KeyStore.PasswordProtection("changeit".toCharArray()));
+        
+        // get the certificate, which is the container of the public key
         X509Certificate cert = (X509Certificate) keyEntry.getCertificate();
         
         //Get the public key to encrypt the symmetric key
@@ -64,9 +71,12 @@ public class XmlEncrypter {
         keyGenerator.init(128);
         Key symmetrickey = keyGenerator.generateKey();
         
+        // Alternative generate a symmetric key with Triple DES
+        // Key symmetricKey = KeyGenerator.getInstance("DESede").generateKey();
+        
         // <code>XMLCipher</code> encrypts and decrypts the contents of
-        // <code>Document</code>s, <code>Element</code>s and <code>Element</code>
-        // contents
+        // <code>Document</code>s, <code>Element</code>s and <code>Element</code> contents
+        // Create a cipher based in an RSA algorithm 
         XMLCipher keyCipher = XMLCipher.getInstance(XMLCipher.RSA_v1dot5);
 
         
@@ -102,7 +112,7 @@ public class XmlEncrypter {
          * modify the document by replacing the EncrypteData element
          * for the data to be encrypted.
          */
-        xmlCipher.doFinal(doc, doc.getDocumentElement());       
+        xmlCipher.doFinal(doc, doc.getDocumentElement(), true);       
         
          outputDocToFile(doc, "src/main/java/ch/bfh/ti/xml/output/encriptedAnimal.xml");
     }  
