@@ -13,15 +13,8 @@ import java.security.Key;
 import java.security.KeyStore;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import javax.crypto.KeyGenerator;
-import javax.xml.crypto.dsig.keyinfo.KeyInfo;
-import javax.xml.crypto.dsig.keyinfo.KeyInfoFactory;
-import javax.xml.crypto.dsig.keyinfo.X509Data;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -29,6 +22,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.xml.security.encryption.EncryptedData;
 import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
+import org.apache.xml.security.keys.KeyInfo;
 import org.w3c.dom.Document;
 
 /**
@@ -46,14 +40,14 @@ public class XmlEncrypter {
         // Instantiate the document to be encrypted.
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-        Document doc = dbf.newDocumentBuilder().parse(new FileInputStream("src/main/java/ch/bfh/ti/xml/input/animal.xml"));
+        Document doc = dbf.newDocumentBuilder().parse(new FileInputStream("src/main/resources/ch/bfh/ti/xml/input/animal.xml"));
         
        
         // Create a keystore with type JCEKS
         KeyStore ks = KeyStore.getInstance("JCEKS");
         
         // Load the keystore 
-        ks.load(new FileInputStream("src/main/java/ch/bfh/ti/xml/util/KeyStore.jce"), "changeit".toCharArray());
+        ks.load(new FileInputStream("src/main/resources/ch/bfh/ti/xml/util/KeyStore.jce"), "changeit".toCharArray());
         
         // get the signing key
         KeyStore.PrivateKeyEntry keyEntry
@@ -76,7 +70,7 @@ public class XmlEncrypter {
         
         // <code>XMLCipher</code> encrypts and decrypts the contents of
         // <code>Document</code>s, <code>Element</code>s and <code>Element</code> contents
-        // Create a cipher based in an RSA algorithm 
+        // Create a cipher based in an RSA algorithm.
         XMLCipher keyCipher = XMLCipher.getInstance(XMLCipher.RSA_v1dot5);
 
         
@@ -92,16 +86,15 @@ public class XmlEncrypter {
         // Encrypts a key to an EncryptedKey structure
         EncryptedKey encryptedKey = keyCipher.encryptKey(doc, symmetrickey);
 
+        
         //Algorithm for the EncryptionMethod of the EncryptedData
         // To encrypt the data
-      
-
         XMLCipher xmlCipher
                 = XMLCipher.getInstance(XMLCipher.AES_128);
         xmlCipher.init(XMLCipher.ENCRYPT_MODE, symmetrickey);
         
         EncryptedData encryptedData = xmlCipher.getEncryptedData();
-        org.apache.xml.security.keys.KeyInfo keyInfo = new org.apache.xml.security.keys.KeyInfo(doc);
+        KeyInfo keyInfo = new KeyInfo(doc);
         keyInfo.add(encryptedKey);
         encryptedData.setKeyInfo(keyInfo);
 
@@ -114,7 +107,7 @@ public class XmlEncrypter {
          */
         xmlCipher.doFinal(doc, doc.getDocumentElement(), true);       
         
-         outputDocToFile(doc, "src/main/java/ch/bfh/ti/xml/output/encriptedAnimal.xml");
+         outputDocToFile(doc, "src/main/resources/ch/bfh/ti/xml/output/encriptedAnimal.xml");
     }  
     
     private static void outputDocToFile(Document doc, String fileName) throws Exception {
@@ -123,7 +116,7 @@ public class XmlEncrypter {
 
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer = factory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+//        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         DOMSource source = new DOMSource(doc);
         StreamResult result = new StreamResult(f);
         transformer.transform(source, result);
