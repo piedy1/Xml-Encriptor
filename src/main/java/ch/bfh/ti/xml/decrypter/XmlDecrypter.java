@@ -96,7 +96,7 @@ public class XmlDecrypter {
 
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer = factory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+//        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         DOMSource source = new DOMSource(doc);
         StreamResult result = new StreamResult(f);
         transformer.transform(source, result);
